@@ -1,4 +1,4 @@
-package edu.ucne.morenofootball.data.usuarios.local
+package edu.ucne.morenofootball.data.entities.usuarios.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

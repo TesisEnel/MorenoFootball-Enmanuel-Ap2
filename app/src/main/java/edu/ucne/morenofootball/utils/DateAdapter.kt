@@ -1,4 +1,4 @@
-package edu.ucne.morenofootball.di
+package edu.ucne.morenofootball.utils
 
 import androidx.room.TypeConverter
 import java.time.LocalDateTime

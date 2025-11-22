@@ -8,6 +8,11 @@ import javax.inject.Inject
 class LoginUseCase @Inject constructor(
     private val repo: UsuarioRepository
 ) {
-    suspend operator fun invoke(credenciales: Login): Resource<Unit> =
-        repo.login(credenciales)
+    suspend operator fun invoke(credenciales: Login): Resource<Unit> {
+        return when (val result = repo.login(credenciales)) {
+            is Resource.Success -> Resource.Success(Unit)
+            is Resource.Error -> Resource.Error(result.message ?: "")
+            is Resource.Loading -> Resource.Loading()
+        }
+    }
 }

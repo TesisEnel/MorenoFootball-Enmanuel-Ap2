@@ -1,8 +1,9 @@
 package edu.ucne.morenofootball.domain.usuarios.useCases
 
 import edu.ucne.morenofootball.utils.ValidationResult
+import javax.inject.Inject
 
-class ValidarLoginRegisterUseCase {
+class ValidarLoginRegisterUseCase @Inject constructor() {
     fun validarEmail(email: String): ValidationResult {
         if (email.isBlank()) return ValidationResult(false, "Este campo es obligatorio *")
 

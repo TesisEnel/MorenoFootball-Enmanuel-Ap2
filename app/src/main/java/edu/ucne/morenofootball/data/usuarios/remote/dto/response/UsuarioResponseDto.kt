@@ -1,4 +1,4 @@
-package edu.ucne.morenofootball.data.entities.usuarios.remote.dto.response
+package edu.ucne.morenofootball.data.usuarios.remote.dto.response
 
 data class UsuarioResponseDto(
     val usuarioId: Int,

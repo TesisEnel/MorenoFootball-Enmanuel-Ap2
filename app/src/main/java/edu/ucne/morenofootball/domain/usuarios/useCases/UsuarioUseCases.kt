@@ -4,6 +4,6 @@ data class UsuarioUseCases(
     val registerUseCase: RegisterUseCase,
     val loginUseCase: LoginUseCase,
     val modificarCredencialesUseCase: ModificarCredencialesUseCase,
-    val validarLoginUseCase: ValidarLoginUseCase,
-    val validarRegisterAndModificarUseCase: ValidarRegisterAndModificarUseCase
+    val validarLoginRegisterUseCase: ValidarLoginRegisterUseCase,
+    val getUsuarioLoggeadoUseCase: GetUsuarioLoggeadoUseCase
 )

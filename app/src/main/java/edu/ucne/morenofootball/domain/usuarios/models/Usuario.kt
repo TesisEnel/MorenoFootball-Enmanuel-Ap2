@@ -6,4 +6,5 @@ data class Usuario(
     val email: String = "",
     val password: String = "",
     val fechaRegistro: String = "",
+    val rememberUser: Boolean = false,
 )

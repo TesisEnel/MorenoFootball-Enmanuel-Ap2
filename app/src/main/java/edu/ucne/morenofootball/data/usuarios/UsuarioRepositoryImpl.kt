@@ -19,9 +19,10 @@ class UsuarioRepositoryImpl @Inject constructor(
             is Resource.Error -> Resource.Error(remoteResponse.message ?: "", Unit)
             is Resource.Loading -> Resource.Loading()
             is Resource.Success -> {
-                val userResponse = remoteResponse.data
-                local.save(userResponse!!.toEntity())
-                Resource.Success(Unit)
+                remoteResponse.data?.let {
+                    local.save(it.toEntity(true))
+                    return Resource.Success(Unit)
+                } ?: Resource.Error(remoteResponse.message ?: "Error al registrarse")
             }
         }
     }
@@ -31,9 +32,11 @@ class UsuarioRepositoryImpl @Inject constructor(
             is Resource.Error -> Resource.Error(remoteResponse.message ?: "", Unit)
             is Resource.Loading -> Resource.Loading()
             is Resource.Success -> {
-                val userResponse = remoteResponse.data
-                local.save(userResponse!!.toEntity())
-                Resource.Success(Unit)
+                remoteResponse.data?.let {
+                    val localUser = it.toEntity(credenciales.rememberUser)
+                    local.save(localUser)
+                    return Resource.Success(Unit)
+                } ?: Resource.Error(remoteResponse.message ?: "Error al iniciar sesión")
             }
         }
     }
@@ -43,9 +46,10 @@ class UsuarioRepositoryImpl @Inject constructor(
             is Resource.Error -> Resource.Error(remoteResponse.message ?: "", Unit)
             is Resource.Loading -> Resource.Loading()
             is Resource.Success -> {
-                val userResponse = remoteResponse.data
-                local.save(userResponse!!.toEntity())
-                Resource.Success(Unit)
+                remoteResponse.data?.let {
+                    local.save(it.toEntity(credenciales.rememberUser))
+                    Resource.Success(Unit)
+                } ?: Resource.Error(remoteResponse.message ?: "Error al modificar las credenciales")
             }
         }
     }

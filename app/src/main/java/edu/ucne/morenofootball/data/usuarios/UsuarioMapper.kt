@@ -24,15 +24,16 @@ fun Login.toDto() = LoginDto(
 fun ModificarCredenciales.toDto() = ModificarCredencialesDto(
     username,
     email,
-    password
+    password,
 )
 
-fun UsuarioResponseDto.toEntity() = UsuarioEntity(
+fun UsuarioResponseDto.toEntity(rememberUser: Boolean) = UsuarioEntity(
     usuarioId,
     username,
     email,
     password,
-    fechaRegistro
+    registerDate,
+    rememberUser
 )
 
 fun UsuarioEntity.toDomain() = Usuario(
@@ -40,6 +41,7 @@ fun UsuarioEntity.toDomain() = Usuario(
     username,
     email,
     password,
-    fechaRegistro
+    registerDate,
+    rememberUser
 )
 

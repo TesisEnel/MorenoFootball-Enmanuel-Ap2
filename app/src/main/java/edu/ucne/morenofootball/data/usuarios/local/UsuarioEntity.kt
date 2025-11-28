@@ -10,5 +10,6 @@ data class UsuarioEntity(
     val username: String,
     val email: String,
     val password: String,
-    val fechaRegistro: String
+    val registerDate: String,
+    val rememberUser: Boolean
 )

@@ -5,5 +5,5 @@ data class UsuarioResponseDto(
     val username: String,
     val email: String,
     val password: String,
-    val fechaRegistro: String
+    val registerDate: String
 )

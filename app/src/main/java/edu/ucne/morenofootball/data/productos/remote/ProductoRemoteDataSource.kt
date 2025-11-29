@@ -1,6 +1,7 @@
 package edu.ucne.morenofootball.data.productos.remote
 
 import edu.ucne.morenofootball.data.productos.remote.dto.request.ProductoRequest
+import edu.ucne.morenofootball.data.productos.remote.dto.request.ProductoRequestEdit
 import edu.ucne.morenofootball.data.productos.remote.dto.response.ProductoResponse
 import edu.ucne.morenofootball.data.usuarios.remote.UsuarioRemoteDataSource.Companion.NETWORK_ERROR
 import edu.ucne.morenofootball.utils.Resource
@@ -42,5 +43,17 @@ class ProductoRemoteDataSource @Inject constructor(
         executeApiCall(
             apiCall = { api.save(it) },
             request = request
+        )
+
+    suspend fun edit(request: ProductoRequestEdit): Resource<ProductoResponse> =
+        executeApiCall(
+            apiCall = { api.edit(it) },
+            request = request
+        )
+
+    suspend fun delete(productoId: Int): Resource<Unit> =
+        executeApiCall(
+            apiCall = { api.delete(it) },
+            request = productoId
         )
 }

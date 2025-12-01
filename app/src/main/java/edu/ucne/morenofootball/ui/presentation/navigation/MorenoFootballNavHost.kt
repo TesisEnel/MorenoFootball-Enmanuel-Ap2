@@ -9,7 +9,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import edu.ucne.morenofootball.ui.presentation.usuarios.login.LoginScreen
+import edu.ucne.morenofootball.ui.presentation.home.HomeScreen
+import edu.ucne.morenofootball.ui.presentation.login.LoginScreen
 
 @Composable
 fun MorenoFootBallNavHost( nav: NavHostController = rememberNavController()) {
@@ -22,6 +23,16 @@ fun MorenoFootBallNavHost( nav: NavHostController = rememberNavController()) {
             composable<Screen.Login> {
                 LoginScreen(
                     navigateToHome = {
+                        nav.navigate(Screen.Home) {
+                            popUpTo(Screen.Login) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            composable<Screen.Home> {
+                HomeScreen(
+                    navigateToLogin = {
                         nav.navigate(Screen.Home) {
                             popUpTo(Screen.Login) { inclusive = true }
                         }

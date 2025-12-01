@@ -11,5 +11,14 @@ sealed class Screen {
     data object Home : Screen()
 
     @Serializable
-    data object Register : Screen()
+    data object Carrito : Screen()
+
+    @Serializable
+    data object ListaDeDeseos : Screen()
+
+    @Serializable
+    data object Pedidos : Screen()
+
+    @Serializable
+    data object MiCuenta : Screen()
 }

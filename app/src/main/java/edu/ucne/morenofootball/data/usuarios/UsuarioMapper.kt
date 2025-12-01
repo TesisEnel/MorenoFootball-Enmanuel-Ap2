@@ -18,7 +18,7 @@ fun Register.toDto() = RegisterDto(
 
 fun Login.toDto() = LoginDto(
     email,
-    password
+    clave
 )
 
 fun ModificarCredenciales.toDto() = ModificarCredencialesDto(

@@ -1,4 +1,4 @@
-package edu.ucne.morenofootball.ui.presentation.usuarios.login
+package edu.ucne.morenofootball.ui.presentation.login
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween

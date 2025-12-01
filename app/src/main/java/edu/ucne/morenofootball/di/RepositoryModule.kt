@@ -4,9 +4,12 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import edu.ucne.morenofootball.data.productos.ProductoRepositoryImpl
+import edu.ucne.morenofootball.data.productos.remote.ProductoRemoteDataSource
 import edu.ucne.morenofootball.data.usuarios.UsuarioRepositoryImpl
 import edu.ucne.morenofootball.data.usuarios.local.UsuarioDao
 import edu.ucne.morenofootball.data.usuarios.remote.UsuarioRemoteDataSource
+import edu.ucne.morenofootball.domain.productos.ProductoRepository
 import edu.ucne.morenofootball.domain.usuarios.UsuarioRepository
 import javax.inject.Singleton
 
@@ -18,4 +21,9 @@ object RepositoryModule {
     @Singleton
     fun providesUsuarioRepository(remote: UsuarioRemoteDataSource, local: UsuarioDao): UsuarioRepository =
         UsuarioRepositoryImpl(remote, local)
+
+    @Provides
+    @Singleton
+    fun providesProductoRepository(remote: ProductoRemoteDataSource): ProductoRepository =
+        ProductoRepositoryImpl(remote)
 }

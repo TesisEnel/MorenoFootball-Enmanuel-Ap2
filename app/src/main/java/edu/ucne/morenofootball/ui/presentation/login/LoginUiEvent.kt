@@ -1,4 +1,4 @@
-package edu.ucne.morenofootball.ui.presentation.usuarios.login
+package edu.ucne.morenofootball.ui.presentation.login
 
 interface LoginUiEvent {
     data class Login(

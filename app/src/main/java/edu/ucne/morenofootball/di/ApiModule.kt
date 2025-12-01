@@ -6,6 +6,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import edu.ucne.morenofootball.data.productos.remote.ProductoApiService
 import edu.ucne.morenofootball.data.usuarios.remote.UsuarioApiService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -16,7 +17,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 object ApiModule {
-    const val BASE_URL = "http://10.0.0.4:8080/"
+    const val BASE_URL = "http://morenofootball.somee.com/"
 
     @Provides
     @Singleton
@@ -52,5 +53,11 @@ object ApiModule {
     @Singleton
     fun provideUsuarioApiService(retrofit: Retrofit): UsuarioApiService {
         return retrofit.create(UsuarioApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideProductoApiService(retrofit: Retrofit): ProductoApiService {
+        return retrofit.create(ProductoApiService::class.java)
     }
 }

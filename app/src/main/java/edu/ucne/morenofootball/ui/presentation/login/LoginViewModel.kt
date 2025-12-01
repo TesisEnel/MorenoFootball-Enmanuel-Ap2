@@ -1,4 +1,4 @@
-package edu.ucne.morenofootball.ui.presentation.usuarios.login
+package edu.ucne.morenofootball.ui.presentation.login
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -172,7 +172,7 @@ class LoginViewModel @Inject constructor(
             val result = usuarioUseCases.loginUseCase(
                 Login(
                     email = email,
-                    password = password,
+                    clave = password,
                     rememberUser = rememberUser
                 )
             )

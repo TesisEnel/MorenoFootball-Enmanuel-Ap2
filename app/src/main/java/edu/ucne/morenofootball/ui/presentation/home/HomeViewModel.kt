@@ -1,5 +1,6 @@
 package edu.ucne.morenofootball.ui.presentation.home
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,12 +29,16 @@ class HomeViewModel @Inject constructor(
 
     init {
         getUserLoggeado()
+        loadProductsByTipo(1)
     }
 
     fun onEvent(event: HomeUiEvent) {
         when (event) {
             is HomeUiEvent.OnSearchQueryChange -> _state.update { it.copy(searchQuery = event.query) }
             is HomeUiEvent.OnCategorySelected -> onCategoriaSelected(event.category)
+            is HomeUiEvent.PullToRefresh -> _state.update { it.copy(isRefreshing = !it.isRefreshing) }
+            is HomeUiEvent.LoadProducts -> loadProducts()
+            is HomeUiEvent.LoadProductsByTipo -> loadProductsByTipo(event.tipo)
         }
     }
 
@@ -71,6 +76,34 @@ class HomeViewModel @Inject constructor(
                             error = result.message,
                             message = "No hay productos...",
                             products = emptyList()
+                        )
+                    }
+
+                    is Resource.Loading -> _state.update { it.copy(isLoading = true) }
+                }
+            }
+        }
+    }
+
+    private fun loadProductsByTipo(tipo: Int) {
+        viewModelScope.launch {
+            productoUseCases.listByTipo(tipo).collectLatest { result ->
+                when (result) {
+                    is Resource.Success -> _state.update {
+                        it.copy(
+                            productsFiltered = result.data ?: emptyList(),
+                            isLoading = false,
+                            error = null
+                        )
+                    }
+
+
+                    is Resource.Error -> _state.update {
+                        it.copy(
+                            isLoading = false,
+                            error = result.message,
+                            message = "No hay productos...",
+                            productsFiltered = emptyList()
                         )
                     }
 

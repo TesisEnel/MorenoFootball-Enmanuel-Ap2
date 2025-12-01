@@ -1,13 +1,17 @@
 package edu.ucne.morenofootball.ui.presentation.home
 
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import edu.ucne.morenofootball.domain.productos.models.Producto
 
 data class HomeUiState(
     val searchQuery: String = "",
     val isSearchActive: Boolean = false,
     val products: List<Producto> = emptyList(),
+    val productsFiltered: List<Producto> = emptyList(),
     val categories: List<SelectableCategoryUiState> = getDefaultCategories(),
     val isLoading: Boolean = false,
+    val isRefreshing: Boolean = false,
     val error: String? = null,
     val message: String? = null,
 )

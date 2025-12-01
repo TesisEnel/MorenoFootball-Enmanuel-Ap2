@@ -25,11 +25,14 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.SearchOff
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.pulltorefresh.pullToRefresh
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -46,12 +49,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import edu.ucne.morenofootball.R
 import edu.ucne.morenofootball.domain.productos.models.Producto
 import edu.ucne.morenofootball.ui.theme.successColorDark
 import edu.ucne.morenofootball.ui.theme.successColorLight
+
 
 @Composable
 fun HomeScreen(
@@ -72,6 +75,7 @@ fun HomeScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeBody(
     state: HomeUiState,
@@ -82,6 +86,16 @@ fun HomeBody(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .pullToRefresh(
+                isRefreshing = state.isLoading,
+                state = rememberPullToRefreshState(),
+                onRefresh = {
+                    if (!state.isLoading) {
+                        onEvent(HomeUiEvent.PullToRefresh)
+                        onEvent(HomeUiEvent.LoadProducts)
+                    }
+                }
+            )
             .background(MaterialTheme.colorScheme.background)
             .padding(8.dp)
             .clickable(
@@ -154,31 +168,14 @@ fun CategoriesSection(
     state: HomeUiState,
     onEvent: (HomeUiEvent) -> Unit,
 ) {
-    when {
-        state.isLoading -> {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(40.dp),
-                    color = MaterialTheme.colorScheme.primary,
-                    strokeWidth = 4.dp,
-                    trackColor = MaterialTheme.colorScheme.surfaceVariant
-                )
-            }
-        }
-        else -> {
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(state.categories) { category ->
-                    CategoryChip(
-                        category = category,
-                        onEvent = onEvent
-                    )
-                }
-            }
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        items(state.categories) { category ->
+            CategoryChip(
+                category = category,
+                onEvent = onEvent
+            )
         }
     }
 }
@@ -196,7 +193,10 @@ fun CategoryChip(
                 else MaterialTheme.colorScheme.primaryContainer
             )
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clickable{ onEvent(HomeUiEvent.OnCategorySelected(category)) }
+            .clickable {
+                onEvent(HomeUiEvent.OnCategorySelected(category))
+                onEvent(HomeUiEvent.LoadProductsByTipo(category.id))
+            }
     ) {
         Text(
             text = category.name,
@@ -223,7 +223,8 @@ fun ProductsSection(state: HomeUiState) {
                 )
             }
         }
-        state.products.isEmpty() -> {
+
+        state.productsFiltered.isEmpty() -> {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -248,11 +249,12 @@ fun ProductsSection(state: HomeUiState) {
                 )
             }
         }
+
         else -> {
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(state.products) { product ->
+                items(state.productsFiltered) { product ->
                     ProductCard(product = product)
                 }
             }
@@ -308,12 +310,13 @@ fun ProductCard(product: Producto) {
                 text = "$${product.precio}",
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold,
-                color = if(isSystemInDarkTheme()) successColorDark else successColorLight
+                color = if (isSystemInDarkTheme()) successColorDark else successColorLight
             )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {

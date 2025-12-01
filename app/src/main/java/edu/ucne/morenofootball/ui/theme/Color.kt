@@ -1,6 +1,9 @@
 package edu.ucne.morenofootball.ui.theme
 import androidx.compose.ui.graphics.Color
 
+val successColorDark = Color(0xFF4CAF50)
+val successColorLight = Color(0xff2e7d32)
+
 val primaryLight = Color(0xFF00687A)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFADECFF)

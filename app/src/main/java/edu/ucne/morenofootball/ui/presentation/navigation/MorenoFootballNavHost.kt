@@ -1,6 +1,5 @@
 package edu.ucne.morenofootball.ui.presentation.navigation
 
-// Estos son los imports CORRECTOS:
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding

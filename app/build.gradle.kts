@@ -80,6 +80,9 @@ dependencies {
     // coil para ver imagenes mediante url
     implementation("io.coil-kt:coil-compose:2.4.0")
 
+    // componentes bacanos
+    implementation("androidx.compose.material3:material3:1.1.0")
+
 
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.4")
 

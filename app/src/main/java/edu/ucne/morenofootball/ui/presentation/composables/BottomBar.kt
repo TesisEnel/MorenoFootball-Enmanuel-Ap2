@@ -24,7 +24,7 @@ import edu.ucne.morenofootball.ui.presentation.navigation.Screen
 @Composable
 fun BottomBar(nav: NavHostController) {
     val currentDestination = nav.currentBackStackEntryAsState().value?.destination
-
+    val a = currentDestination?.route
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         tonalElevation = 8.dp
@@ -48,16 +48,14 @@ fun BottomBar(nav: NavHostController) {
             NavigationBarItem(
                 selected = selected,
                 onClick = {
-                    nav.navigate(screen) {
-                        // Configuración para evitar múltiples instancias
-                        launchSingleTop = true
-                        restoreState = true
+                    if (currentDestination != screen) {
+                        nav.navigate(screen) {
+                            launchSingleTop = true
+                            restoreState = true
 
-                        // Pop up to the start destination of the graph to
-                        // avoid building up a large stack of destinations
-                        // on the back stack as users select items
-                        popUpTo(nav.graph.findStartDestination().id) {
-                            saveState = true
+                            popUpTo(nav.graph.findStartDestination().id) {
+                                saveState = true
+                            }
                         }
                     }
                 },

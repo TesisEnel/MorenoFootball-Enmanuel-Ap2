@@ -26,10 +26,10 @@ class TarjetaRemoteDataSource @Inject constructor(
             Resource.Error(networkError)
         }
 
-    suspend fun listByUsuarioId(): Resource<List<TarjetaResponse>> =
+    suspend fun listByUsuarioId(usuarioId: Int): Resource<List<TarjetaResponse>> =
         executeApiCall(
-            apiCall = { api.listByUsuarioId() },
-            request = Unit,
+            apiCall = { api.listByUsuarioId(it) },
+            request = usuarioId,
         )
     suspend fun save(request: TarjetaRequest): Resource<TarjetaResponse> =
         executeApiCall(

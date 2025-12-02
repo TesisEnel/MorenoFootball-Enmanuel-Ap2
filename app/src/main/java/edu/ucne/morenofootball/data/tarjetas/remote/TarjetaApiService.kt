@@ -11,8 +11,8 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface TarjetaApiService {
-    @GET("api/Tarjeta/listByUsuarioId")
-    suspend fun listByUsuarioId(): Response<List<TarjetaResponse>>
+    @GET("api/Tarjeta/listByUsuarioId/{usuarioId}")
+    suspend fun listByUsuarioId(@Path ("usuarioId") usuarioId: Int): Response<List<TarjetaResponse>>
 
     @POST("api/Tarjeta/create")
     suspend fun save(@Body request: TarjetaRequest): Response<TarjetaResponse>

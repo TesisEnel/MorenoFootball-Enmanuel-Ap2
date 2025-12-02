@@ -6,6 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import edu.ucne.morenofootball.domain.usuarios.useCases.*
 import edu.ucne.morenofootball.domain.productos.useCases.*
+import edu.ucne.morenofootball.domain.tarjetas.useCases.*
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -19,14 +20,14 @@ object DomainModule {
         modificarCredencialesUseCase: ModificarCredencialesUseCase,
         validarLoginRegisterUseCase: ValidarLoginRegisterUseCase,
         getUsuarioLoggeadoUseCase: GetUsuarioLoggeadoUseCase,
-        LogoutUseCase: LogoutUseCase
+        logoutUseCase: LogoutUseCase
     ) = UsuarioUseCases(
         registerUseCase = registerUseCase,
         loginUseCase = loginUseCase,
         modificarCredencialesUseCase = modificarCredencialesUseCase,
         validarLoginRegisterUseCase = validarLoginRegisterUseCase,
         getUsuarioLoggeadoUseCase = getUsuarioLoggeadoUseCase,
-        logoutUseCase = LogoutUseCase
+        logoutUseCase = logoutUseCase
     )
 
     @Provides
@@ -44,4 +45,19 @@ object DomainModule {
         edit = editUseCase,
         delete = deleteUseCase
     )
+
+    @Provides
+    @Singleton
+    fun providesTarjetaUseCases(
+        listTarjetasByUsuarioIdUsecase: ListTarjetasByUsuarioIdUsecase,
+        saveTarjetaUseCase: SaveTarjetaUseCase,
+        editTarjetaUseCase: EditTarjetaUseCase,
+        deleteTarjetaUseCase: DeleteTarjetaUseCase
+    ): TarjetaUseCases = TarjetaUseCases(
+        listTarjetasByUsuarioIdUsecase = listTarjetasByUsuarioIdUsecase,
+        saveTarjetaUseCase = saveTarjetaUseCase,
+        editTarjetaUseCase = editTarjetaUseCase,
+        deleteTarjetaUseCase = deleteTarjetaUseCase
+    )
+
 }

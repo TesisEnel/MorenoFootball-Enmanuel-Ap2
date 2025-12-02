@@ -18,13 +18,15 @@ object DomainModule {
         loginUseCase: LoginUseCase,
         modificarCredencialesUseCase: ModificarCredencialesUseCase,
         validarLoginRegisterUseCase: ValidarLoginRegisterUseCase,
-        getUsuarioLoggeadoUseCase: GetUsuarioLoggeadoUseCase
+        getUsuarioLoggeadoUseCase: GetUsuarioLoggeadoUseCase,
+        LogoutUseCase: LogoutUseCase
     ) = UsuarioUseCases(
         registerUseCase = registerUseCase,
         loginUseCase = loginUseCase,
         modificarCredencialesUseCase = modificarCredencialesUseCase,
         validarLoginRegisterUseCase = validarLoginRegisterUseCase,
         getUsuarioLoggeadoUseCase = getUsuarioLoggeadoUseCase,
+        logoutUseCase = LogoutUseCase
     )
 
     @Provides

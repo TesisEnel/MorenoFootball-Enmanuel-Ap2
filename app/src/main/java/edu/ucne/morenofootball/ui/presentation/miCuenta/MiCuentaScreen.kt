@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package edu.ucne.morenofootball.ui.presentation.miCuenta
 
 import androidx.compose.foundation.background
@@ -16,6 +18,7 @@ import androidx.compose.material.icons.twotone.CreditCard
 import androidx.compose.material.icons.twotone.LocalShipping
 import androidx.compose.material.icons.twotone.Person
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +41,7 @@ fun MiCuentaScreen(
     navigateToLogin: () -> Unit = {},
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
+    val formattedDate = viewModel.formattedDate.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.navigateToLogin.collect {
@@ -47,6 +51,7 @@ fun MiCuentaScreen(
 
     MiCuentaBody(
         state = state.value,
+        formattedDate = formattedDate.value,
         onEvent = viewModel::onEvent
     )
 }
@@ -55,6 +60,7 @@ fun MiCuentaScreen(
 fun MiCuentaBody(
     state: MiCuentaUiState,
     onEvent: (MiCuentaUiEvent) -> Unit,
+    formattedDate: String,
 ) {
     Column(
         modifier = Modifier
@@ -128,7 +134,7 @@ fun MiCuentaBody(
 
             // Metodos de Pago
             TextButton(
-                onClick = { /* TODO */ },
+                onClick = { onEvent(MiCuentaUiEvent.ToggleTarjetasModal) },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.textButtonColors(
                     contentColor = MaterialTheme.colorScheme.onSurface
@@ -150,6 +156,14 @@ fun MiCuentaBody(
                         textAlign = TextAlign.Start
                     )
                 }
+            }
+
+            if(state.toggleModalTarjetas) {
+                TarjetaModal(
+                    state = state,
+                    formattedDate = formattedDate,
+                    onEvent = onEvent
+                )
             }
 
             HorizontalDivider(

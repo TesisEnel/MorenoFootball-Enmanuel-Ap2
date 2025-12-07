@@ -17,8 +17,16 @@ class TarjetaRepositorImpl @Inject constructor(
         }
     }
 
+    override suspend fun getByTarjetaId(tarjetaId: Int): Resource<Tarjeta> {
+        return when (val response = remote.getByTarjetaId(tarjetaId)) {
+            is Resource.Success -> Resource.Success(response.data?.toDomain() ?: Tarjeta())
+            is Resource.Error -> Resource.Error(response.message ?: "Hubo un error al cargar la tarjeta")
+            is Resource.Loading -> Resource.Loading()
+        }
+    }
+
     override suspend fun save(tarjeta: Tarjeta): Resource<Tarjeta> {
-        return when (val response = remote.save(tarjeta.toDto())) {
+        return when (val response = remote.save(tarjeta.toCreateDto())) {
             is Resource.Success -> Resource.Success(response.data?.toDomain() ?: Tarjeta())
             is Resource.Error -> Resource.Error(response.message ?: "Hubo un error al crear la tarjeta")
             is Resource.Loading -> Resource.Loading()

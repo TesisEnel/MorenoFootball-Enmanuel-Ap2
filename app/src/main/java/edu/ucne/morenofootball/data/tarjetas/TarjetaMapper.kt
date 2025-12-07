@@ -1,5 +1,6 @@
 package edu.ucne.morenofootball.data.tarjetas
 
+import edu.ucne.morenofootball.data.tarjetas.remote.dto.request.EditTarjetaRequest
 import edu.ucne.morenofootball.data.tarjetas.remote.dto.request.TarjetaRequest
 import edu.ucne.morenofootball.data.tarjetas.remote.dto.response.TarjetaResponse
 import edu.ucne.morenofootball.domain.tarjetas.models.Tarjeta
@@ -11,13 +12,20 @@ fun TarjetaResponse.toDomain() = Tarjeta(
     cvv,
     nombreTitular,
     fechaVencimiento,
-    tipoTarjeta
+    tipoTarjeta ?: ""
 )
 
-fun Tarjeta.toDto() = TarjetaRequest(
+fun Tarjeta.toDto() = EditTarjetaRequest(
+    tarjetaId = tarjetaId,
     usuarioId = usuarioId,
-    bin = bin,
-    cvv = cvv,
     nombreTitular = nombreTitular,
-    fechaVencimiento =fechaVencimiento,
+    fechaVencimiento = fechaVencimiento
+)
+
+fun Tarjeta.toCreateDto() = TarjetaRequest(
+    usuarioId,
+    bin,
+    cvv,
+    nombreTitular,
+    fechaVencimiento
 )

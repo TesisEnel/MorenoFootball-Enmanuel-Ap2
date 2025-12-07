@@ -52,12 +52,16 @@ object DomainModule {
         listTarjetasByUsuarioIdUsecase: ListTarjetasByUsuarioIdUsecase,
         saveTarjetaUseCase: SaveTarjetaUseCase,
         editTarjetaUseCase: EditTarjetaUseCase,
-        deleteTarjetaUseCase: DeleteTarjetaUseCase
+        deleteTarjetaUseCase: DeleteTarjetaUseCase,
+        getByTarjetaIdUseCase: GetByTarjetaIdUseCase,
+        tarjetaValidations: TarjetaValidations
     ): TarjetaUseCases = TarjetaUseCases(
         listTarjetasByUsuarioIdUsecase = listTarjetasByUsuarioIdUsecase,
+        getByTarjetaIdUseCase = getByTarjetaIdUseCase,
         saveTarjetaUseCase = saveTarjetaUseCase,
         editTarjetaUseCase = editTarjetaUseCase,
-        deleteTarjetaUseCase = deleteTarjetaUseCase
+        deleteTarjetaUseCase = deleteTarjetaUseCase,
+        tarjetaValidations = tarjetaValidations
     )
 
 }

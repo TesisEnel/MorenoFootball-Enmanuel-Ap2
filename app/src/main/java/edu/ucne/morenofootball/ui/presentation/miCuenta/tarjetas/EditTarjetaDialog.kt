@@ -1,4 +1,4 @@
-package edu.ucne.morenofootball.ui.presentation.miCuenta
+package edu.ucne.morenofootball.ui.presentation.miCuenta.tarjetas
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +36,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import edu.ucne.morenofootball.ui.presentation.composables.ErrorMessage
+import edu.ucne.morenofootball.ui.presentation.miCuenta.MiCuentaUiEvent
+import edu.ucne.morenofootball.ui.presentation.miCuenta.MiCuentaUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

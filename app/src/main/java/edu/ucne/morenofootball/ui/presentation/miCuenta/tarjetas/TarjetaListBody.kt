@@ -1,4 +1,4 @@
-package edu.ucne.morenofootball.ui.presentation.miCuenta
+package edu.ucne.morenofootball.ui.presentation.miCuenta.tarjetas
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -35,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import edu.ucne.morenofootball.R
 import edu.ucne.morenofootball.domain.tarjetas.models.Tarjeta
+import edu.ucne.morenofootball.ui.presentation.miCuenta.MiCuentaUiEvent
+import edu.ucne.morenofootball.ui.presentation.miCuenta.MiCuentaUiState
 import java.text.SimpleDateFormat
 import java.util.Locale
 

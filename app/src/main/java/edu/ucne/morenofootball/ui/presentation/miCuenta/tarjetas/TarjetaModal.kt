@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package edu.ucne.morenofootball.ui.presentation.miCuenta
+package edu.ucne.morenofootball.ui.presentation.miCuenta.tarjetas
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +31,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import edu.ucne.morenofootball.ui.presentation.miCuenta.MiCuentaUiEvent
+import edu.ucne.morenofootball.ui.presentation.miCuenta.MiCuentaUiState
 
 @ExperimentalMaterial3Api
 @Composable

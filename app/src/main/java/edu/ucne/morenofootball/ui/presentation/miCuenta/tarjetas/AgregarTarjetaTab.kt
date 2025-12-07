@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package edu.ucne.morenofootball.ui.presentation.miCuenta
+package edu.ucne.morenofootball.ui.presentation.miCuenta.tarjetas
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -68,6 +68,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import edu.ucne.morenofootball.ui.presentation.composables.ErrorMessage
+import edu.ucne.morenofootball.ui.presentation.miCuenta.MiCuentaUiEvent
+import edu.ucne.morenofootball.ui.presentation.miCuenta.MiCuentaUiState
 import java.time.LocalDate
 import java.time.YearMonth
 

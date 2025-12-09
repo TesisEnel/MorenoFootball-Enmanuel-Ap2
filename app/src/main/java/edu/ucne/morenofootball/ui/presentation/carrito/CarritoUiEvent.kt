@@ -7,5 +7,4 @@ interface CarritoUiEvent {
     data class AumentarCantidad(val carritoDetalleId: Int): CarritoUiEvent
     data class DisminuirCantidad(val carritoDetalleId: Int): CarritoUiEvent
     data object VaciarCarrito: CarritoUiEvent
-    data object GoToCheckOut: CarritoUiEvent
 }

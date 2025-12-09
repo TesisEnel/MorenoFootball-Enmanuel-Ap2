@@ -16,6 +16,9 @@ interface ProductoApiService {
     @GET("api/Productos/listByAvability")
     suspend fun listByAvability(): Response<List<ProductoResponse>>
 
+    @GET("api/Productos/getById/{productoId}")
+    suspend fun getById(@Path("productoId") productoId: Int): Response<ProductoResponse>
+
     @GET("api/Productos/listByIds")
     suspend fun listByIds(@Query("idsProductos") idsProductos: List<Int>): Response<List<ProductoResponse>>
 

@@ -10,10 +10,14 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ProductoApiService {
     @GET("api/Productos/listByAvability")
     suspend fun listByAvability(): Response<List<ProductoResponse>>
+
+    @GET("api/Productos/listByIds")
+    suspend fun listByIds(@Query("idsProductos") idsProductos: List<Int>): Response<List<ProductoResponse>>
 
     @GET("api/Productos/listByTipo/{tipoProducto}")
     suspend fun listByTipo(@Path("tipoProducto") tipoProducto: Int): Response<List<ProductoResponse>>

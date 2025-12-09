@@ -5,6 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import edu.ucne.morenofootball.domain.carritos.useCases.*
+import edu.ucne.morenofootball.domain.pedidos.useCases.*
 import edu.ucne.morenofootball.domain.usuarios.useCases.*
 import edu.ucne.morenofootball.domain.productos.useCases.*
 import edu.ucne.morenofootball.domain.tarjetas.useCases.*
@@ -87,5 +88,19 @@ object DomainModule {
         disminuirCantidadUseCase = disminuirCantidadUseCase,
         vaciarCarritoUseCase = vaciarCarritoUseCase,
         deleteProductUseCase = deleteProductUseCase
+    )
+
+    @Provides
+    @Singleton
+    fun providesPedidoUseCases(
+        createPedidoUseCase: CreatePedidoUseCase,
+        listByUsuarioIdUseCase: ListByUsuarioIdUseCase,
+        listByEntregaUseCase: ListByEntregaUseCase,
+        listByEnviadoUseCase: ListByEnviadoUseCase
+        ): PedidoUseCases = PedidoUseCases(
+        createPedidoUseCase = createPedidoUseCase,
+        listByUsuarioIdUseCase = listByUsuarioIdUseCase,
+        listByEntregaUseCase = listByEntregaUseCase,
+        listByEnviadoUseCase = listByEnviadoUseCase
     )
 }

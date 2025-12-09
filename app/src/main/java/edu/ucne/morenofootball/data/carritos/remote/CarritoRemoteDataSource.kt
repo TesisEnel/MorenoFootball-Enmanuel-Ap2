@@ -1,9 +1,9 @@
 package edu.ucne.morenofootball.data.carritos.remote
 
-import edu.ucne.morenofootball.data.carritos.remote.dto.request.AgregarProductoParams
-import edu.ucne.morenofootball.data.carritos.remote.dto.request.ActionWithProductFromCardParams
-import edu.ucne.morenofootball.data.carritos.remote.dto.request.UserOrSessionIdParams
-import edu.ucne.morenofootball.data.carritos.remote.dto.response.CarritoResponse
+import edu.ucne.morenofootball.data.carritos.remote.dto.request.AgregarProductoParamsReqDto
+import edu.ucne.morenofootball.data.carritos.remote.dto.request.ActionWithProductFromCardParamsReqDto
+import edu.ucne.morenofootball.data.carritos.remote.dto.request.UserOrSessionIdParamsReqDto
+import edu.ucne.morenofootball.data.carritos.remote.dto.response.CarritoResponseResDto
 import edu.ucne.morenofootball.data.usuarios.remote.UsuarioRemoteDataSource.Companion.NETWORK_ERROR
 import edu.ucne.morenofootball.utils.Resource
 import okio.IOException
@@ -28,41 +28,41 @@ class CarritoRemoteDataSource @Inject constructor(
             Resource.Error(networkError)
         }
 
-    suspend fun listByUsuarioId(params: UserOrSessionIdParams): Resource<List<CarritoResponse>> =
+    suspend fun getByUsuarioId(params: UserOrSessionIdParamsReqDto): Resource<CarritoResponseResDto> =
         executeApiCall(
-            apiCall = { api.listByUsuarioId(params) },
-            request = Unit,
+            apiCall = { api.getByUsuarioId(it.usuarioId ?: 0, it.sesionAnonimaId) },
+            request = params,
         )
-    suspend fun getTotalCarrito(params: UserOrSessionIdParams): Resource<Double> =
+    suspend fun getTotalCarrito(params: UserOrSessionIdParamsReqDto): Resource<Double> =
         executeApiCall(
-            apiCall = { api.getTotalCarrito(params) },
-            request = Unit,
+            apiCall = { api.getTotalCarrito(it.usuarioId ?: 0, it.sesionAnonimaId) },
+            request = params,
         )
-    suspend fun agregarProducto(params: AgregarProductoParams): Resource<CarritoResponse> =
+    suspend fun agregarProducto(params: AgregarProductoParamsReqDto): Resource<Unit> =
         executeApiCall(
-            apiCall = { api.agregarProducto(it) },
+            apiCall = { api.agregarProducto(it.usuarioId ?: 0, it.productoId, it.cantidad, it.sesionAnonimaId) },
             request = params
         )
-    suspend fun aumentarCantidad(params: ActionWithProductFromCardParams): Resource<CarritoResponse> =
+    suspend fun aumentarCantidad(params: ActionWithProductFromCardParamsReqDto): Resource<Unit> =
         executeApiCall(
-            apiCall = { api.aumentarCantidad(it) },
+            apiCall = { api.aumentarCantidad(it.usuarioId ?: 0, it.productoId, it.sesionAnonimaId) },
             request = params
         )
-    suspend fun disminuirCantidad(params: ActionWithProductFromCardParams): Resource<CarritoResponse> =
+    suspend fun disminuirCantidad(params: ActionWithProductFromCardParamsReqDto): Resource<Unit> =
         executeApiCall(
-            apiCall = { api.disminuirCantidad(it) },
+            apiCall = { api.disminuirCantidad(it.usuarioId ?: 0, it.productoId, it.sesionAnonimaId) },
             request = params
         )
 
-    suspend fun vaciarCarrito(params: UserOrSessionIdParams): Resource<Unit> =
+    suspend fun vaciarCarrito(params: UserOrSessionIdParamsReqDto): Resource<Unit> =
         executeApiCall(
-            apiCall = { api.vaciarCarrito(params) },
-            request = Unit
+            apiCall = { api.vaciarCarrito(it.usuarioId ?: 0, it.sesionAnonimaId) },
+            request = params
         )
 
-    suspend fun deleteProduct(params: ActionWithProductFromCardParams): Resource<Unit> =
+    suspend fun deleteProduct(params: ActionWithProductFromCardParamsReqDto): Resource<Unit> =
         executeApiCall(
-            apiCall = { api.deleteProduct(params) },
-            request = Unit
+            apiCall = { api.deleteProduct(it.usuarioId ?: 0, it.productoId, it.sesionAnonimaId) },
+            request = params
         )
 }

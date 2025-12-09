@@ -5,6 +5,7 @@ import edu.ucne.morenofootball.utils.Resource
 
 interface ProductoRepository {
     suspend fun listByAvability(): Resource<List<Producto>>
+    suspend fun listByIds(productosIds: List<Int>): Resource<List<Producto>>
     suspend fun listByTipo(tipoProducto: Int): Resource<List<Producto>>
     suspend fun save(producto: ProductoReq): Resource<Unit>
     suspend fun edit(producto: ProductoReqEdit): Resource<Unit>

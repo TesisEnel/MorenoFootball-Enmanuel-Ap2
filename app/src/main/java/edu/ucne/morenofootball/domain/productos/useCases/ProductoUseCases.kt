@@ -5,5 +5,6 @@ data class ProductoUseCases(
     val listByTipo: ListByTipoUseCase,
     val save: SaveUseCase,
     val edit: EditUseCase,
-    val delete: DeleteUseCase
+    val delete: DeleteUseCase,
+    val listByIds: ListByIdsUseCase
 )

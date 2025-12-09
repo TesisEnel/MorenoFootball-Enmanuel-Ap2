@@ -33,6 +33,12 @@ class ProductoRemoteDataSource @Inject constructor(
             request = Unit,
         )
 
+    suspend fun listByIds(productosIds: List<Int>): Resource<List<ProductoResponse>> =
+        executeApiCall(
+            apiCall = { api.listByIds(it) },
+            request = productosIds,
+        )
+
     suspend fun listByTipo(tipoProducto: Int): Resource<List<ProductoResponse>> =
         executeApiCall(
             apiCall = { api.listByTipo(it) },

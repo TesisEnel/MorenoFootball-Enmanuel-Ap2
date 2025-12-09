@@ -1,5 +1,6 @@
 package edu.ucne.morenofootball.data.tarjetas.remote
 
+import edu.ucne.morenofootball.data.tarjetas.remote.dto.request.EditTarjetaRequest
 import edu.ucne.morenofootball.data.tarjetas.remote.dto.request.TarjetaRequest
 import edu.ucne.morenofootball.data.tarjetas.remote.dto.response.TarjetaResponse
 import edu.ucne.morenofootball.data.usuarios.remote.UsuarioRemoteDataSource.Companion.NETWORK_ERROR
@@ -26,17 +27,24 @@ class TarjetaRemoteDataSource @Inject constructor(
             Resource.Error(networkError)
         }
 
-    suspend fun listByUsuarioId(): Resource<List<TarjetaResponse>> =
+    suspend fun listByUsuarioId(usuarioId: Int): Resource<List<TarjetaResponse>> =
         executeApiCall(
-            apiCall = { api.listByUsuarioId() },
-            request = Unit,
+            apiCall = { api.listByUsuarioId(it) },
+            request = usuarioId,
         )
+
+    suspend fun getByTarjetaId(tarjetaId: Int): Resource<TarjetaResponse> =
+        executeApiCall(
+            apiCall = { api.getByTarjetaId(it) },
+            request = tarjetaId,
+        )
+
     suspend fun save(request: TarjetaRequest): Resource<TarjetaResponse> =
         executeApiCall(
-            apiCall = { api.save(it) },
+            apiCall = { api.create(it) },
             request = request,
         )
-    suspend fun edit(request: TarjetaRequest): Resource<TarjetaResponse> =
+    suspend fun edit(request: EditTarjetaRequest): Resource<TarjetaResponse> =
         executeApiCall(
             apiCall = { api.edit(it) },
             request = request

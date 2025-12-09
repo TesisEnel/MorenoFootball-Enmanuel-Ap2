@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.twotone.ArrowBack
+import androidx.compose.material.icons.automirrored.twotone.ArrowBack
 import androidx.compose.material.icons.twotone.Home
 import androidx.compose.material.icons.twotone.ShoppingCart
 import androidx.compose.material3.Badge
@@ -34,7 +34,7 @@ import edu.ucne.morenofootball.ui.presentation.navigation.Screen
 fun TopBar(
     navController: NavHostController,
     onCartClick: () -> Unit,
-    cartItemCount: Int = 0
+    cartItemCount: Int = 0,
 ) {
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination
     val isHomeScreen = currentDestination?.route == Screen.Home::class.qualifiedName
@@ -44,7 +44,9 @@ fun TopBar(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(x = (14).dp)
             ) {
                 Text(
                     text = "MORENO",
@@ -64,10 +66,7 @@ fun TopBar(
             if (isHomeScreen) {
                 // Icono Home cuando estamos en Home
                 IconButton(
-                    onClick = {
-                        // Puedes agregar lógica adicional aquí si necesitas
-                        // Por ejemplo, scroll al inicio, etc.
-                    },
+                    onClick = { },
                     modifier = Modifier.padding(start = 8.dp)
                 ) {
                     Icon(
@@ -85,7 +84,7 @@ fun TopBar(
                     modifier = Modifier.padding(start = 8.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.TwoTone.ArrowBack,
+                        imageVector = Icons.AutoMirrored.TwoTone.ArrowBack,
                         contentDescription = "Regresar",
                         tint = MaterialTheme.colorScheme.primary
                     )
@@ -93,38 +92,31 @@ fun TopBar(
             }
         },
         actions = {
-            // Solo mostrar carrito si estamos en una pantalla donde tenga sentido
-            val showCart = currentDestination?.route?.let { route ->
-                route != Screen.Carrito::class.qualifiedName // No mostrar en la pantalla del carrito
-            } ?: true
-
-            if (showCart) {
-                // Contador del carrito
-                if (cartItemCount > 0) {
-                    Badge(
-                        modifier = Modifier
-                            .offset(x = (-8).dp, y = 8.dp)
-                            .size(20.dp),
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = Color.White
-                    ) {
-                        Text(
-                            text = if (cartItemCount > 99) "99+" else cartItemCount.toString(),
-                            fontSize = 10.sp
-                        )
-                    }
-                }
-
-                IconButton(
-                    onClick = onCartClick,
-                    modifier = Modifier.padding(end = 8.dp)
+            // Contador del carrito
+            if (cartItemCount > 0) {
+                Badge(
+                    modifier = Modifier
+                        .offset(x = (16).dp, y = 8.dp)
+                        .size(20.dp),
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = Color.White
                 ) {
-                    Icon(
-                        imageVector = Icons.TwoTone.ShoppingCart,
-                        contentDescription = "Carrito",
-                        tint = MaterialTheme.colorScheme.primary
+                    Text(
+                        text = if (cartItemCount > 99) "99+" else cartItemCount.toString(),
+                        fontSize = 10.sp
                     )
                 }
+            }
+
+            IconButton(
+                onClick = { navController.navigate(Screen.Carrito) },
+                modifier = Modifier.padding(end = 8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.TwoTone.ShoppingCart,
+                    contentDescription = "Carrito",
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(

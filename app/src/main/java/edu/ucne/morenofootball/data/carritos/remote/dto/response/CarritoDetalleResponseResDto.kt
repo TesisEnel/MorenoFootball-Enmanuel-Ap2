@@ -1,6 +1,6 @@
 package edu.ucne.morenofootball.data.carritos.remote.dto.response
 
-data class CarritoDetalleResponse(
+data class CarritoDetalleResponseResDto(
     val detalleId: Int,
     val carritoId: Int,
     val productoId: Int,

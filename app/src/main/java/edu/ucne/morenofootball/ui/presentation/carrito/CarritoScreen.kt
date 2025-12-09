@@ -1,6 +1,12 @@
 package edu.ucne.morenofootball.ui.presentation.carrito
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,11 +15,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -22,6 +30,9 @@ import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.ShoppingCartCheckout
 import androidx.compose.material.icons.twotone.Cancel
 import androidx.compose.material.icons.twotone.Delete
+import androidx.compose.material.icons.twotone.Explore
+import androidx.compose.material.icons.twotone.LocalOffer
+import androidx.compose.material.icons.twotone.ShoppingBag
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -43,6 +54,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,23 +68,27 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import edu.ucne.morenofootball.domain.carritos.models.response.CarritoDetalleResponse
 import edu.ucne.morenofootball.domain.productos.models.Producto
+import kotlinx.coroutines.delay
 import java.text.NumberFormat
 import java.util.Locale
 
 @Composable
 fun CarritoScreen(
     viewModel: CarritoViewModel = hiltViewModel(),
+    navigateToHome: () -> Unit
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
 
     CarritoBody(
         state = state.value,
-        onEvent = viewModel::onEvent
+        onEvent = viewModel::onEvent,
+        navigateToHome = navigateToHome
     )
 }
 
@@ -81,6 +97,7 @@ fun CarritoScreen(
 fun CarritoBody(
     state: CarritoUiState,
     onEvent: (CarritoUiEvent) -> Unit,
+    navigateToHome: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -130,7 +147,10 @@ fun CarritoBody(
             }
 
             state.carrito.detalles.isEmpty() -> {
-                EmptyCart(modifier = Modifier.padding(paddingValues))
+                EmptyCart(
+                    modifier = Modifier.padding(paddingValues),
+                    onExploreProducts = navigateToHome
+                )
             }
 
             else -> {
@@ -482,19 +502,139 @@ fun ProductoCarritoRow(
     }
 }
 
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun EmptyCart(
     modifier: Modifier = Modifier,
+    onExploreProducts: () -> Unit = {}
 ) {
-    Box(
+    var animationPlayed by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        delay(300)
+        animationPlayed = true
+    }
+
+    Column(
         modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "El carrito está vacío",
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+        // Icono animado
+        AnimatedVisibility(
+            visible = animationPlayed,
+            enter = fadeIn() + scaleIn(),
+            exit = fadeOut()
         )
+        {
+            Box(
+                modifier = Modifier
+                    .size(140.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        shape = CircleShape
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.TwoTone.ShoppingBag,
+                    contentDescription = "Carrito vacío",
+                    modifier = Modifier.size(70.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // Contenido de texto
+        AnimatedVisibility(
+            visible = animationPlayed,
+            enter = fadeIn(animationSpec = tween(delayMillis = 200))
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            ) {
+                Text(
+                    text = "Carrito vacío",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Aún no tienes productos en tu carrito.\n¡Comienza tu experiencia de compra ahora!",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 24.sp
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(40.dp))
+
+        // BTNs de accion
+        AnimatedVisibility(
+            visible = animationPlayed,
+            enter = fadeIn(animationSpec = tween(delayMillis = 400))
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                // Botón principal
+                Button(
+                    onClick = { onExploreProducts() },
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .height(56.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    ),
+                    elevation = ButtonDefaults.buttonElevation(
+                        defaultElevation = 4.dp
+                    )
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.TwoTone.Explore,
+                            contentDescription = null
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Descubrir productos",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+                }
+
+                // Texto sugerencias
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.TwoTone.LocalOffer,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp),
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "¡Ofertas exclusivas esperando por ti!",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -507,7 +647,8 @@ fun Double.formatAsCurrency(): String {
 fun CarritoScreenPreview() {
     CarritoBody(
         state = CarritoUiState(),
-        onEvent = { }
+        onEvent = { },
+        navigateToHome = { }
     )
 }
 

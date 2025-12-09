@@ -7,6 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import edu.ucne.morenofootball.data.carritos.remote.CarritoApiService
+import edu.ucne.morenofootball.data.pedidos.remote.PedidoApiService
 import edu.ucne.morenofootball.data.productos.remote.ProductoApiService
 import edu.ucne.morenofootball.data.tarjetas.remote.TarjetaApiService
 import edu.ucne.morenofootball.data.usuarios.remote.UsuarioApiService
@@ -72,4 +73,9 @@ object ApiModule {
     @Singleton
     fun providesCarritoApiService(retrofit: Retrofit): CarritoApiService =
         retrofit.create(CarritoApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun providesPedidoApiService(retrofit: Retrofit): PedidoApiService =
+        retrofit.create(PedidoApiService::class.java)
 }

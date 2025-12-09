@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import edu.ucne.morenofootball.ui.presentation.carrito.CarritoScreen
 import edu.ucne.morenofootball.ui.presentation.carrito.CarritoViewModel
 import edu.ucne.morenofootball.ui.presentation.composables.BottomBar
@@ -21,6 +22,7 @@ import edu.ucne.morenofootball.ui.presentation.composables.TopBar
 import edu.ucne.morenofootball.ui.presentation.home.HomeScreen
 import edu.ucne.morenofootball.ui.presentation.login.LoginScreen
 import edu.ucne.morenofootball.ui.presentation.miCuenta.MiCuentaScreen
+import edu.ucne.morenofootball.ui.presentation.productoDetalles.ProductoDetalleScreen
 
 @Composable
 fun MorenoFootBallNavHost() {
@@ -62,12 +64,11 @@ fun AppScreen(
     nav: NavHostController,
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
-    floatingActionButton: @Composable () -> Unit = {}
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = topBar,
-        bottomBar = bottomBar
+        bottomBar = bottomBar,
     ) { innerPadding ->
         NavHost(
             modifier = Modifier.padding(innerPadding),
@@ -90,6 +91,20 @@ fun AppScreen(
                         nav.navigate(Screen.Home) {
                             popUpTo(Screen.Login) { inclusive = true }
                         }
+                    },
+                    onProductClick = { productoId ->
+                        nav.navigate(Screen.ProductoDetalle(productoId))
+                    }
+                )
+            }
+
+            composable<Screen.ProductoDetalle> { backStackEntry ->
+                val args = backStackEntry.toRoute<Screen.ProductoDetalle>()
+                ProductoDetalleScreen(
+                    productoId = args.productoId,
+                    navigateToCart = { nav.navigate(Screen.Carrito) },
+                    onProductClick = { productoId ->
+                        nav.navigate(Screen.ProductoDetalle(productoId))
                     }
                 )
             }

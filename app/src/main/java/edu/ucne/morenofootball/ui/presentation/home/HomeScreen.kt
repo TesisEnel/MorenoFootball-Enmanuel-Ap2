@@ -6,7 +6,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -59,13 +58,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import edu.ucne.morenofootball.R
 import edu.ucne.morenofootball.domain.productos.models.Producto
-import edu.ucne.morenofootball.ui.theme.successColorDark
-import edu.ucne.morenofootball.ui.theme.successColorLight
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     navigateToLogin: () -> Unit = {},
+    onProductClick: (Int) -> Unit
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
 
@@ -77,7 +75,8 @@ fun HomeScreen(
 
     HomeBody(
         state = state.value,
-        onEvent = viewModel::onEvent
+        onEvent = viewModel::onEvent,
+        onProductClick = onProductClick
     )
 }
 
@@ -86,6 +85,7 @@ fun HomeScreen(
 fun HomeBody(
     state: HomeUiState,
     onEvent: (HomeUiEvent) -> Unit,
+    onProductClick: (Int) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -154,7 +154,8 @@ fun HomeBody(
             item {// Productos filtrados
                 this@LazyColumn.ProductsFilteredSection(
                     state = state,
-                    onEvent = onEvent
+                    onEvent = onEvent,
+                    onProductClick = onProductClick
                 )
             }
 
@@ -171,7 +172,8 @@ fun HomeBody(
             item { // TODOS los productos
                 this@LazyColumn.AllProductsSection(
                     state = state,
-                    onEvent = onEvent
+                    onEvent = onEvent,
+                    onProductClick = onProductClick
                 )
             }
         }
@@ -251,6 +253,7 @@ fun CategoryChip(
 fun LazyListScope.ProductsFilteredSection(
     state: HomeUiState,
     onEvent: (HomeUiEvent) -> Unit,
+    onProductClick: (Int) -> Unit,
 ) {
     when {
         state.isLoadingProductsFiltered -> {
@@ -298,7 +301,7 @@ fun LazyListScope.ProductsFilteredSection(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(state.productsFiltered) { product ->
-                    ProductCard(product = product)
+                    ProductCard(product = product, onProductClick)
                 }
             }
         }
@@ -309,6 +312,7 @@ fun LazyListScope.ProductsFilteredSection(
 fun LazyListScope.AllProductsSection(
     state: HomeUiState,
     onEvent: (HomeUiEvent) -> Unit,
+    onProductClick: (Int) -> Unit,
 ) {
     when {
         state.isLoadingAllProducts -> {
@@ -370,7 +374,7 @@ fun LazyListScope.AllProductsSection(
                         ) {
                             currentRow.forEach { prod ->
                                 Box(modifier = Modifier.weight(1f)) {
-                                    ProductCard(product = prod)
+                                    ProductCard(product = prod, onProductClick)
                                 }
                             }
 
@@ -390,11 +394,18 @@ fun LazyListScope.AllProductsSection(
 }
 
 @Composable
-fun ProductCard(product: Producto) {
+fun ProductCard(
+    product: Producto,
+    onProductClick: (Int) -> Unit,
+) {
     Card(
         modifier = Modifier
             .width(200.dp)
-            .height(180.dp),
+            .height(180.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .clickable {
+                onProductClick(product.productoId)
+            },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -431,10 +442,10 @@ fun ProductCard(product: Producto) {
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = "RD$${"%.2f".format(product.precio)}",
+                text = "$${"%.2f".format(product.precio)}",
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.Bold,
-                color = if (isSystemInDarkTheme()) successColorDark else successColorLight
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
     }
@@ -465,7 +476,8 @@ fun HomeScreenPreview() {
                 ),
             )
         ),
-        onEvent = {}
+        onEvent = {},
+        onProductClick = {}
     )
 }
 

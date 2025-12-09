@@ -35,6 +35,7 @@ object DomainModule {
     @Singleton
     fun providesProductoUseCases(
         listByAvailabilityUseCase: ListByAvailabilityUseCase,
+        getByIdUseCase: GetByIdUseCase,
         listByTipoUseCase: ListByTipoUseCase,
         saveUseCase: SaveUseCase,
         editUseCase: EditUseCase,
@@ -42,6 +43,7 @@ object DomainModule {
         listByIdsUseCase: ListByIdsUseCase
     ): ProductoUseCases = ProductoUseCases(
         listByAvailability = listByAvailabilityUseCase,
+        getById = getByIdUseCase,
         listByTipo = listByTipoUseCase,
         save = saveUseCase,
         edit = editUseCase,

@@ -247,7 +247,7 @@ fun CarritoBody(
                                 Text("Vaciar Carrito")
                             }
                             Button(
-                                onClick = { onEvent(CarritoUiEvent.GoToCheckOut) },
+                                onClick = { /* TODO() */ },
                                 modifier = Modifier.fillMaxWidth(),
                                 colors = ButtonDefaults.buttonColors(
                                     contentColor = MaterialTheme.colorScheme.primary,

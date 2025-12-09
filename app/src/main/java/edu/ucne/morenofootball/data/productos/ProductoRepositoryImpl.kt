@@ -17,6 +17,13 @@ class ProductoRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getById(productoId: Int): Resource<Producto> {
+        return when (val response = remote.getById(productoId)) {
+            is Resource.Error -> Resource.Error(response.message ?: "")
+            is Resource.Loading -> Resource.Loading()
+            is Resource.Success -> Resource.Success(response.data?.toDomain() ?: Producto())
+        }    }
+
     override suspend fun listByIds(productosIds: List<Int>): Resource<List<Producto>> {
         return when (val response = remote.listByIds(productosIds)) {
             is Resource.Error -> Resource.Error(response.message ?: "")

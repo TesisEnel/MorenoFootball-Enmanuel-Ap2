@@ -2,6 +2,7 @@ package edu.ucne.morenofootball.domain.productos.useCases
 
 data class ProductoUseCases(
     val listByAvailability: ListByAvailabilityUseCase,
+    val getById: GetByIdUseCase,
     val listByTipo: ListByTipoUseCase,
     val save: SaveUseCase,
     val edit: EditUseCase,

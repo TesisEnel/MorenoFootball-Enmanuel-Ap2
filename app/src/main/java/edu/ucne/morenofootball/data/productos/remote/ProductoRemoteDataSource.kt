@@ -33,6 +33,12 @@ class ProductoRemoteDataSource @Inject constructor(
             request = Unit,
         )
 
+    suspend fun getById(productoId: Int): Resource<ProductoResponse> =
+        executeApiCall(
+            apiCall = { api.getById(it) },
+            request = productoId,
+        )
+
     suspend fun listByIds(productosIds: List<Int>): Resource<List<ProductoResponse>> =
         executeApiCall(
             apiCall = { api.listByIds(it) },

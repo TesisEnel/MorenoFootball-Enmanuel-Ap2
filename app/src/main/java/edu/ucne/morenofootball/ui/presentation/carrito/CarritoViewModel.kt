@@ -50,12 +50,7 @@ class CarritoViewModel @Inject constructor(
             is CarritoUiEvent.DisminuirCantidad -> disminuirCantidad(event.carritoDetalleId)
             is CarritoUiEvent.DeleteProduct -> deleteProduct(event.carritoDetalleId)
             is CarritoUiEvent.VaciarCarrito -> vaciarCarrito()
-            is CarritoUiEvent.GoToCheckOut -> goToCheckOut()
         }
-    }
-
-    private fun goToCheckOut() {
-        TODO("Not yet implemented")
     }
 
     private fun vaciarCarrito() {

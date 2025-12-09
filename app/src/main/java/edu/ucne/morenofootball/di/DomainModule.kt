@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import edu.ucne.morenofootball.domain.carritos.useCases.*
 import edu.ucne.morenofootball.domain.usuarios.useCases.*
 import edu.ucne.morenofootball.domain.productos.useCases.*
 import edu.ucne.morenofootball.domain.tarjetas.useCases.*
@@ -37,13 +38,15 @@ object DomainModule {
         listByTipoUseCase: ListByTipoUseCase,
         saveUseCase: SaveUseCase,
         editUseCase: EditUseCase,
-        deleteUseCase: DeleteUseCase
+        deleteUseCase: DeleteUseCase,
+        listByIdsUseCase: ListByIdsUseCase
     ): ProductoUseCases = ProductoUseCases(
         listByAvailability = listByAvailabilityUseCase,
         listByTipo = listByTipoUseCase,
         save = saveUseCase,
         edit = editUseCase,
-        delete = deleteUseCase
+        delete = deleteUseCase,
+        listByIds = listByIdsUseCase
     )
 
     @Provides
@@ -64,4 +67,23 @@ object DomainModule {
         tarjetaValidations = tarjetaValidations
     )
 
+    @Provides
+    @Singleton
+    fun providesCarritoUseCases(
+        getByUsuarioIdUseCase: GetByUsuarioIdUseCase,
+        getTotalCarritoUseCase: GetTotalCarritoUseCase,
+        agregarProductoUseCase: AgregarProductoUseCase,
+        aumentarCantidadUseCase: AumentarCantidadUseCase,
+        disminuirCantidadUseCase: DisminuirCantidadUseCase,
+        vaciarCarritoUseCase: VaciarCarritoUseCase,
+        deleteProductUseCase: DeleteProductUseCase
+    ): CarritoUseCases = CarritoUseCases(
+        getByUsuarioIdUseCase = getByUsuarioIdUseCase,
+        getTotalCarritoUseCase = getTotalCarritoUseCase,
+        agregarProductoUseCase = agregarProductoUseCase,
+        aumentarCantidadUseCase = aumentarCantidadUseCase,
+        disminuirCantidadUseCase = disminuirCantidadUseCase,
+        vaciarCarritoUseCase = vaciarCarritoUseCase,
+        deleteProductUseCase = deleteProductUseCase
+    )
 }

@@ -23,5 +23,14 @@ sealed class Screen {
     data object Pedidos : Screen()
 
     @Serializable
+    data class Checkout(val productoId: Int? = null) : Screen()
+
+    @Serializable
+    data object Agradecimiento : Screen()
+
+    @Serializable
+    data class PedidoDetalleScreen(val pedidoId: Int) : Screen()
+
+    @Serializable
     data object MiCuenta : Screen()
 }

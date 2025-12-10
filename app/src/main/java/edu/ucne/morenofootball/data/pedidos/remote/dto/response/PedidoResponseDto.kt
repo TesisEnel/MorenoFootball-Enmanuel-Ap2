@@ -1,13 +1,13 @@
 package edu.ucne.morenofootball.data.pedidos.remote.dto.response
 
 data class PedidoResponseDto(
-    val pedidoId: Int,
-    val usuarioId: Int,
-    val tarjetaId: Int,
-    val fechaPedido: String,
-    val fechaEnviado: String,
-    val fechaEntrega: String,
-    val estaEntregado: Boolean,
-    val estaEnviado: Boolean,
-    val detalles: List<PedidoDetalleResponseDto>
+    val pedidoId: Int = 0,
+    val usuarioId: Int = 0,
+    val tarjetaId: Int = 0,
+    val fechaPedido: String = "",
+    val fechaEnviado: String = "",
+    val fechaEntrega: String = "",
+    val estaEntregado: Boolean = false,
+    val estaEnviado: Boolean = false,
+    val detalle: List<PedidoDetalleResponseDto> = emptyList()
 )

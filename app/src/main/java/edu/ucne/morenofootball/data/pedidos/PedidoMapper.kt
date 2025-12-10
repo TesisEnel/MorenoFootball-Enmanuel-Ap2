@@ -18,7 +18,7 @@ fun PedidoResponseDto.toDomain() = PedidoResponse(
     fechaEntrega,
     estaEntregado,
     estaEnviado,
-    detalles.map { it.toDomain() }
+    detalle.map { it.toDomain() }
 )
 
 fun PedidoDetalleResponseDto.toDomain() = PedidoDetalleResponse(
@@ -29,20 +29,12 @@ fun PedidoDetalleResponseDto.toDomain() = PedidoDetalleResponse(
 )
 
 fun PedidoRequest.toDto() = PedidoRequestDto(
-    pedidoId,
     usuarioId,
     tarjetaId,
-    fechaPedido,
-    fechaEnviado,
-    fechaEntrega,
-    estaEntregado,
-    estaEnviado,
     detalles.map { it.toDto() }
 )
 
 fun PedidoDetalleRequest.toDto() = PedidoDetalleRequestDto(
-    detalleId,
-    pedidoId,
     productoId,
     cantidad,
 )

@@ -3,8 +3,6 @@ package edu.ucne.morenofootball.ui.presentation.home
 import edu.ucne.morenofootball.domain.productos.models.Producto
 
 data class HomeUiState(
-    val searchQuery: String = "",
-    val isSearchActive: Boolean = false,
     val products: List<Producto> = emptyList(),
     val productsFiltered: List<Producto> = emptyList(),
     val categories: List<SelectableCategoryUiState> = getDefaultCategories(),
@@ -23,7 +21,7 @@ data class SelectableCategoryUiState(
 
 private fun getDefaultCategories(): List<SelectableCategoryUiState> {
     return listOf(
-        SelectableCategoryUiState(1, "Camisetas Oficiales"),
+        SelectableCategoryUiState(1, "Camisetas Oficiales", true),
         SelectableCategoryUiState(2, "Shorts Oficiales"),
         SelectableCategoryUiState(3, "Medias"),
         SelectableCategoryUiState(4, "Sudadera"),

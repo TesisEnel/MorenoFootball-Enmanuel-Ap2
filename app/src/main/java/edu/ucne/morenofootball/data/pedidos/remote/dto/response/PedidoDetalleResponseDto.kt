@@ -1,8 +1,8 @@
 package edu.ucne.morenofootball.data.pedidos.remote.dto.response
 
 data class PedidoDetalleResponseDto(
-    val detalleId: Int,
-    val pedidoId: Int,
-    val productoId: Int,
-    val cantidad: Int,
+    val detalleId: Int = 0,
+    val pedidoId: Int = 0,
+    val productoId: Int = 0,
+    val cantidad: Int = 0,
 )

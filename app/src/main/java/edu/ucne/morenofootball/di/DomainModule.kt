@@ -94,11 +94,13 @@ object DomainModule {
     @Singleton
     fun providesPedidoUseCases(
         createPedidoUseCase: CreatePedidoUseCase,
+        getPedidoByIdUseCase: GetPedidoByIdUseCase,
         listByUsuarioIdUseCase: ListByUsuarioIdUseCase,
         listByEntregaUseCase: ListByEntregaUseCase,
         listByEnviadoUseCase: ListByEnviadoUseCase
         ): PedidoUseCases = PedidoUseCases(
         createPedidoUseCase = createPedidoUseCase,
+        getPedidoByIdUseCase = getPedidoByIdUseCase,
         listByUsuarioIdUseCase = listByUsuarioIdUseCase,
         listByEntregaUseCase = listByEntregaUseCase,
         listByEnviadoUseCase = listByEnviadoUseCase

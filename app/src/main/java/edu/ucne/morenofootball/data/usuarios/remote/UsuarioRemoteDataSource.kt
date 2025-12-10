@@ -21,7 +21,7 @@ class UsuarioRemoteDataSource @Inject constructor(
             if (response.isSuccessful)
                 response.body()?.let { Resource.Success(it) }
                     ?: Resource.Error("Hubo un error al registrarse")
-            else Resource.Error(response.message())
+            else Resource.Error("Este email ya existe")
         } catch (e: IOException) {
             Resource.Error(NETWORK_ERROR)
         }
@@ -32,7 +32,7 @@ class UsuarioRemoteDataSource @Inject constructor(
             if (response.isSuccessful)
                 response.body()?.let { Resource.Success(it) }
                     ?: Resource.Error("Hubo un error al iniciar sesión")
-            else Resource.Error(response.message())
+            else Resource.Error("Email o contraseña incorrectos")
         } catch (e: IOException) {
             Resource.Error(NETWORK_ERROR)
         }
@@ -44,7 +44,7 @@ class UsuarioRemoteDataSource @Inject constructor(
             if (response.isSuccessful)
                 response.body()?.let { Resource.Success(it) }
                     ?: Resource.Error("Hubo un error al modificar las credenciales")
-            else Resource.Error(response.message())
+            else Resource.Error("Este email ya existe...")
         } catch (e: IOException) {
             Resource.Error(NETWORK_ERROR)
         }

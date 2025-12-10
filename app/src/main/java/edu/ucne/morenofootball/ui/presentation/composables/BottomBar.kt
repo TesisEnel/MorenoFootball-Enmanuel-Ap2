@@ -3,7 +3,6 @@ package edu.ucne.morenofootball.ui.presentation.composables
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.AccountCircle
-import androidx.compose.material.icons.twotone.Favorite
 import androidx.compose.material.icons.twotone.Home
 import androidx.compose.material.icons.twotone.ShoppingCart
 import androidx.compose.material3.Icon
@@ -24,7 +23,6 @@ import edu.ucne.morenofootball.ui.presentation.navigation.Screen
 @Composable
 fun BottomBar(nav: NavHostController) {
     val currentDestination = nav.currentBackStackEntryAsState().value?.destination
-    val a = currentDestination?.route
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         tonalElevation = 8.dp
@@ -33,13 +31,11 @@ fun BottomBar(nav: NavHostController) {
         listOf(
             Screen.Home,
             Screen.Carrito,
-            Screen.ListaDeDeseos,
             Screen.MiCuenta
         ).forEach { screen ->
             when (screen) {
                 Screen.Home -> icon = Icons.TwoTone.Home
                 Screen.Carrito -> icon = Icons.TwoTone.ShoppingCart
-                Screen.ListaDeDeseos -> icon = Icons.TwoTone.Favorite
                 Screen.MiCuenta -> icon = Icons.TwoTone.AccountCircle
                 else -> {}
             }

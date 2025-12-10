@@ -2,6 +2,13 @@
 
 package edu.ucne.morenofootball.ui.presentation.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,8 +39,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -107,14 +112,6 @@ fun HomeBody(
                 },
             contentPadding = PaddingValues(8.dp)
         ) {
-            // Barra de busqueda
-            item {
-                SearchBar(
-                    state = state,
-                    onEvent = onEvent
-                )
-            }
-
             item {
                 Row(
                     modifier = Modifier
@@ -181,26 +178,6 @@ fun HomeBody(
 }
 
 @Composable
-fun SearchBar(
-    state: HomeUiState,
-    onEvent: (HomeUiEvent) -> Unit,
-) {
-    TextField(
-        value = state.searchQuery,
-        onValueChange = { onEvent(HomeUiEvent.OnSearchQueryChange(it)) },
-        placeholder = { Text("Buscar productos...") },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = "Buscar"
-            )
-        },
-        colors = TextFieldDefaults.colors(),
-        modifier = Modifier.fillMaxWidth(),
-    )
-}
-
-@Composable
 fun CategoriesSection(
     state: HomeUiState,
     onEvent: (HomeUiEvent) -> Unit,
@@ -222,31 +199,57 @@ fun CategoryChip(
     category: SelectableCategoryUiState,
     onEvent: (HomeUiEvent) -> Unit,
 ) {
-    FilterChip(
-        onClick = {
-            onEvent(HomeUiEvent.OnCategorySelected(category))
-            onEvent(HomeUiEvent.LoadProductsByTipo(category.id))
-        },
-        label = {
-            Text(
-                text = category.name,
-                color = if (category.isSelected) MaterialTheme.colorScheme.primary
-                else MaterialTheme.colorScheme.secondary,
-                fontWeight = FontWeight.Medium
-            )
-        },
-        selected = category.isSelected,
-        leadingIcon = if (category.isSelected) {
-            {
+    Card(
+        modifier = Modifier
+            .clip(MaterialTheme.shapes.small)
+            .animateContentSize()
+            .clickable {
+                onEvent(HomeUiEvent.OnCategorySelected(category))
+                onEvent(HomeUiEvent.LoadProductsByTipo(category.id))
+            },
+        shape = MaterialTheme.shapes.small,
+        colors = CardDefaults.cardColors(
+            containerColor = if (category.isSelected)
+                MaterialTheme.colorScheme.primaryContainer
+            else
+                MaterialTheme.colorScheme.surfaceVariant
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = if (category.isSelected) 4.dp else 1.dp,
+            pressedElevation = 2.dp
+        ),
+        border = if (category.isSelected)
+            BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+        else
+            BorderStroke(0.5.dp, MaterialTheme.colorScheme.outline)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AnimatedVisibility(
+                visible = category.isSelected,
+                enter = fadeIn() + expandHorizontally(),
+                exit = fadeOut() + shrinkHorizontally()
+            ) {
                 Icon(
                     imageVector = Icons.TwoTone.Done,
-                    contentDescription = "Done icon",
-                    modifier = Modifier.size(FilterChipDefaults.IconSize)
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
+                    tint = MaterialTheme.colorScheme.primary
                 )
+                Spacer(modifier = Modifier.width(6.dp))
             }
-        } else
-            null,
-    )
+            Text(
+                text = category.name,
+                color = if (category.isSelected)
+                    MaterialTheme.colorScheme.onPrimaryContainer
+                else
+                    MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = if (category.isSelected) FontWeight.Medium else FontWeight.Normal
+            )
+        }
+    }
 }
 
 @Composable
@@ -449,6 +452,31 @@ fun ProductCard(
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProductoCardPreview() {
+    ProductCard(
+        product = Producto(
+            nombre = "Camiseta Oficial",
+            precio = 1500.0,
+        ),
+        onProductClick = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CategoryChipPreview() {
+    CategoryChip(
+        category = SelectableCategoryUiState(
+            id = 1,
+            name = "Camiseta",
+            isSelected = true
+        ),
+        onEvent = {}
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

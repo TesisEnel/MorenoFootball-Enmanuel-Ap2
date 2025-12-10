@@ -32,11 +32,7 @@ class CarritoViewModel @Inject constructor(
 
     val itemCount = _state.map { state ->
         state.carrito.detalles.sumOf { it.cantidad }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = 0
-    )
+    }
 
     init {
         loadCarrito()
@@ -57,7 +53,9 @@ class CarritoViewModel @Inject constructor(
         viewModelScope.launch {
             val result = carritoUseCases.vaciarCarritoUseCase(UserOrSessionIdParams(getUsuarioId()))
             when (result) {
-                is Resource.Success -> _state.update { it.copy(isLoading = false, error = null) }
+                is Resource.Success -> {
+                    _state.update { it.copy(isLoading = false, error = null) }
+                }
                 is Resource.Error -> _state.update {
                     it.copy(
                         isLoading = false,
@@ -67,6 +65,7 @@ class CarritoViewModel @Inject constructor(
 
                 is Resource.Loading -> _state.update { it.copy(isLoading = true) }
             }
+            loadCarrito()
         }
     }
 

@@ -25,11 +25,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.ShoppingCartCheckout
 import androidx.compose.material.icons.twotone.Cancel
 import androidx.compose.material.icons.twotone.Delete
+import androidx.compose.material.icons.twotone.DeleteOutline
 import androidx.compose.material.icons.twotone.Explore
 import androidx.compose.material.icons.twotone.LocalOffer
 import androidx.compose.material.icons.twotone.ShoppingBag
@@ -47,9 +47,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.surfaceColorAtElevation
@@ -81,14 +78,16 @@ import java.util.Locale
 @Composable
 fun CarritoScreen(
     viewModel: CarritoViewModel = hiltViewModel(),
-    navigateToHome: () -> Unit
+    navigateToHome: () -> Unit,
+    navigateToCheckout: (Int) -> Unit
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
 
     CarritoBody(
         state = state.value,
         onEvent = viewModel::onEvent,
-        navigateToHome = navigateToHome
+        navigateToHome = navigateToHome,
+        navigateToCheckout = navigateToCheckout
     )
 }
 
@@ -98,186 +97,181 @@ fun CarritoBody(
     state: CarritoUiState,
     onEvent: (CarritoUiEvent) -> Unit,
     navigateToHome: () -> Unit,
-    modifier: Modifier = Modifier,
+    navigateToCheckout: (Int) -> Unit,
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
     var showEmptyCartDialog by remember { mutableStateOf(false) }
 
-    Scaffold(
-        modifier = modifier,
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-    ) { paddingValues ->
-
-        // Diálogo para vaciar carrito
-        if (showEmptyCartDialog) {
-            AlertDialog(
-                onDismissRequest = { showEmptyCartDialog = false },
-                title = { Text("Vaciar carrito") },
-                text = { Text("¿Estás seguro de que quieres vaciar todo el carrito?") },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            onEvent(CarritoUiEvent.VaciarCarrito)
-                            showEmptyCartDialog = false
-                        }
-                    ) {
-                        Text("Vaciar")
+    // Dialogo para vaciar carrito
+    if (showEmptyCartDialog) {
+        AlertDialog(
+            onDismissRequest = { showEmptyCartDialog = false },
+            title = { Text("Vaciar carrito") },
+            text = { Text("¿Estás seguro de que quieres vaciar todo el carrito?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onEvent(CarritoUiEvent.VaciarCarrito)
+                        showEmptyCartDialog = false
                     }
-                },
-                dismissButton = {
-                    TextButton(
-                        onClick = { showEmptyCartDialog = false }
-                    ) {
-                        Text("Cancelar")
-                    }
+                ) {
+                    Text("Vaciar")
                 }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showEmptyCartDialog = false }
+                ) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
+
+    when {
+        state.isLoading -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+
+        state.carrito.detalles.isEmpty() -> {
+            EmptyCart(
+                modifier = Modifier.padding(8.dp),
+                onExploreProducts = navigateToHome
             )
         }
 
-        when {
-            state.isLoading -> {
-                Box(
+        else -> {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp)
+            ) {
+                // Lista de productos con sus detalles
+                LazyColumn(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    contentAlignment = Alignment.Center
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(16.dp)
                 ) {
-                    CircularProgressIndicator()
-                }
-            }
-
-            state.carrito.detalles.isEmpty() -> {
-                EmptyCart(
-                    modifier = Modifier.padding(paddingValues),
-                    onExploreProducts = navigateToHome
-                )
-            }
-
-            else -> {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                ) {
-                    // Lista de productos con sus detalles
-                    LazyColumn(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(16.dp)
-                    ) {
-                        items(
-                            items = state.carrito.detalles,
-                            key = { it.detalleId }
-                        ) { detalle ->
-                            val producto =
-                                state.productos.find { it.productoId == detalle.productoId }
-                            ProductoCarritoRow(
-                                producto = producto,
-                                detalleCarrito = detalle,
-                                onIncrease = { onEvent(CarritoUiEvent.AumentarCantidad(detalle.productoId)) },
-                                onDecrease = { onEvent(CarritoUiEvent.DisminuirCantidad(detalle.productoId)) },
-                                onDelete = { onEvent(CarritoUiEvent.DeleteProduct(detalle.productoId)) }
-                            )
-                            HorizontalDivider()
-                        }
-                    }
-
-                    // Resumen del carrito
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
+                    items(
+                        items = state.carrito.detalles,
+                        key = { it.detalleId }
+                    ) { detalle ->
+                        val producto =
+                            state.productos.find { it.productoId == detalle.productoId }
+                        ProductoCarritoRow(
+                            producto = producto,
+                            detalleCarrito = detalle,
+                            onIncrease = { onEvent(CarritoUiEvent.AumentarCantidad(detalle.productoId)) },
+                            onDecrease = { onEvent(CarritoUiEvent.DisminuirCantidad(detalle.productoId)) },
+                            onDelete = { onEvent(CarritoUiEvent.DeleteProduct(detalle.productoId)) }
                         )
+                        HorizontalDivider()
+                    }
+                }
+
+                // Resumen del carrito
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        // Subtotal
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            // Subtotal
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    "Subtotal",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Text(
-                                    text = state.carrito.detalles.sumOf { it.precio * it.cantidad }.formatAsCurrency(),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            }
+                            Text(
+                                "Subtotal",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = state.carrito.detalles.sumOf { it.precio * it.cantidad }
+                                    .formatAsCurrency(),
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
 
-                            // Envío
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    "Envío",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Text(
-                                    "Gratis",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            }
+                        // Envío
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                "Envío",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                "Gratis",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
 
-                            HorizontalDivider()
+                        HorizontalDivider()
 
-                            // Total
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    "Total",
-                                    style = MaterialTheme.typography.headlineSmall
-                                )
-                                Text(
-                                    text = state.carrito.detalles.sumOf { it.precio * it.cantidad }.formatAsCurrency(),
-                                    style = MaterialTheme.typography.headlineSmall,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            }
+                        // Total
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                "Total",
+                                style = MaterialTheme.typography.headlineSmall
+                            )
+                            Text(
+                                text = state.carrito.detalles.sumOf { it.precio * it.cantidad }
+                                    .formatAsCurrency(),
+                                style = MaterialTheme.typography.headlineSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
 
-                            // Boton de vaciar carrito
-                            Button(
-                                onClick = { showEmptyCartDialog = true },
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = ButtonDefaults.buttonColors(
-                                    contentColor = MaterialTheme.colorScheme.error,
-                                    containerColor = MaterialTheme.colorScheme.errorContainer
-                                ),
-                            ) {
-                                Icon(
-                                    Icons.TwoTone.Delete,
-                                    contentDescription = "Vaciar carrito"
-                                )
-                                Spacer(Modifier.width(8.dp))
-                                Text("Vaciar Carrito")
-                            }
-                            Button(
-                                onClick = { /* TODO() */ },
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = ButtonDefaults.buttonColors(
-                                    contentColor = MaterialTheme.colorScheme.primary,
-                                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                                ),
-                            ) {
-                                Icon(Icons.Default.ShoppingCartCheckout, "Checkout")
-                                Spacer(Modifier.width(8.dp))
-                                Text("Ir a CheckOut")
-                            }
+                        // Boton de vaciar carrito
+                        Button(
+                            onClick = { showEmptyCartDialog = true },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                                contentColor = MaterialTheme.colorScheme.error,
+                                containerColor = MaterialTheme.colorScheme.errorContainer
+                            ),
+                        ) {
+                            Icon(
+                                Icons.TwoTone.Delete,
+                                contentDescription = "Vaciar carrito"
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text("Vaciar Carrito")
+                        }
+                        Button(
+                            onClick = { navigateToCheckout(0) },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                                contentColor = MaterialTheme.colorScheme.primary,
+                                containerColor = MaterialTheme.colorScheme.primaryContainer
+                            ),
+                        ) {
+                            Icon(Icons.Default.ShoppingCartCheckout, "Checkout")
+                            Spacer(Modifier.width(8.dp))
+                            Text("Ir a CheckOut")
                         }
                     }
                 }
@@ -492,7 +486,7 @@ fun ProductoCarritoRow(
                         )
                     ) {
                         Icon(
-                            Icons.Default.DeleteOutline,
+                            Icons.TwoTone.DeleteOutline,
                             contentDescription = "Eliminar producto"
                         )
                     }
@@ -502,11 +496,11 @@ fun ProductoCarritoRow(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
 fun EmptyCart(
     modifier: Modifier = Modifier,
-    onExploreProducts: () -> Unit = {}
+    onExploreProducts: () -> Unit = {},
 ) {
     var animationPlayed by remember { mutableStateOf(false) }
 
@@ -640,16 +634,6 @@ fun EmptyCart(
 
 fun Double.formatAsCurrency(): String {
     return NumberFormat.getCurrencyInstance(Locale.US).format(this)
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun CarritoScreenPreview() {
-    CarritoBody(
-        state = CarritoUiState(),
-        onEvent = { },
-        navigateToHome = { }
-    )
 }
 
 @Preview(showBackground = true, showSystemUi = true)

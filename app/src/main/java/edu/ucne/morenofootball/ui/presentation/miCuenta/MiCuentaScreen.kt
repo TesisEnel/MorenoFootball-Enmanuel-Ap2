@@ -40,6 +40,7 @@ import edu.ucne.morenofootball.ui.presentation.miCuenta.tarjetas.TarjetaModal
 fun MiCuentaScreen(
     viewModel: MiCuentaViewModel = hiltViewModel(),
     navigateToLogin: () -> Unit = {},
+    navigateToPedidos: () -> Unit = {},
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
     val formattedDate = viewModel.formattedDate.collectAsStateWithLifecycle()
@@ -53,7 +54,8 @@ fun MiCuentaScreen(
     MiCuentaBody(
         state = state.value,
         formattedDate = formattedDate.value,
-        onEvent = viewModel::onEvent
+        onEvent = viewModel::onEvent,
+        navigateToPedidos = navigateToPedidos
     )
 }
 
@@ -62,6 +64,7 @@ fun MiCuentaBody(
     state: MiCuentaUiState,
     onEvent: (MiCuentaUiEvent) -> Unit,
     formattedDate: String,
+    navigateToPedidos: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -103,7 +106,7 @@ fun MiCuentaBody(
         ) {
             // Mis Pedidos
             TextButton(
-                onClick = { /* TODO */ },
+                onClick = { navigateToPedidos() },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.textButtonColors(
                     contentColor = MaterialTheme.colorScheme.onSurface

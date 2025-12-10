@@ -34,7 +34,6 @@ class HomeViewModel @Inject constructor(
 
     fun onEvent(event: HomeUiEvent) {
         when (event) {
-            is HomeUiEvent.OnSearchQueryChange -> _state.update { it.copy(searchQuery = event.query) }
             is HomeUiEvent.OnCategorySelected -> onCategoriaSelected(event.category)
             is HomeUiEvent.PullToRefresh -> {
                 _state.update { it.copy(isRefreshing = !it.isRefreshing) }

@@ -32,6 +32,12 @@ class PedidoRemoteDataSource @Inject constructor(
             request = usuarioId
         )
 
+    suspend fun getById(pedidoId: Int): Resource<PedidoResponseDto> =
+        executeApiCall(
+            apiCall = { api.getById(it) },
+            request = pedidoId
+        )
+
     suspend fun listByEntrega(usuarioId: Int): Resource<List<PedidoResponseDto>> =
         executeApiCall(
             apiCall = { api.listByEntrega(it) },

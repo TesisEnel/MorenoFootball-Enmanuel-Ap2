@@ -10,7 +10,9 @@ import edu.ucne.morenofootball.domain.productos.useCases.ProductoUseCases
 import edu.ucne.morenofootball.domain.tarjetas.useCases.TarjetaUseCases
 import edu.ucne.morenofootball.domain.usuarios.useCases.UsuarioUseCases
 import edu.ucne.morenofootball.utils.Resource
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
@@ -20,12 +22,14 @@ import javax.inject.Inject
 @HiltViewModel
 class ProductoDetalleViewModel @Inject constructor(
     private val productoUseCases: ProductoUseCases,
-    private val tarjetaUseCases: TarjetaUseCases,
     private val carritoUseCases: CarritoUseCases,
     private val usuarioUseCases: UsuarioUseCases,
 ) : ViewModel() {
     private val _state = MutableStateFlow(ProductoDetalleUiState())
     val state = _state.asStateFlow()
+
+    private val _navigateToAgradecimiento = MutableSharedFlow<Unit>()
+    val navigateToAgradecimiento = _navigateToAgradecimiento.asSharedFlow()
 
     fun onEvent(event: ProductoDetalleUiEvent) {
         when (event) {

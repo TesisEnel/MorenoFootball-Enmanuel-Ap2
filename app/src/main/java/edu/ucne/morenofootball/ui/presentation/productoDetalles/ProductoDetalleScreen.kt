@@ -55,8 +55,8 @@ import kotlinx.coroutines.delay
 fun ProductoDetalleScreen(
     viewModel: ProductoDetalleViewModel = hiltViewModel(),
     productoId: Int,
-    navigateToCart: () -> Unit,
     onProductClick: (Int) -> Unit,
+    onCheckoutProductClick: (Int) -> Unit,
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
 
@@ -67,7 +67,8 @@ fun ProductoDetalleScreen(
     ProductoDetalleBody(
         state = state.value,
         onEvent = viewModel::onEvent,
-        onProductClick = onProductClick
+        onProductClick = onProductClick,
+        onCheckoutProductClick = onCheckoutProductClick
     )
 }
 
@@ -76,6 +77,7 @@ fun ProductoDetalleBody(
     state: ProductoDetalleUiState,
     onEvent: (ProductoDetalleUiEvent) -> Unit,
     onProductClick: (Int) -> Unit,
+    onCheckoutProductClick: (Int) -> Unit
 ) {
 
     Box(
@@ -224,9 +226,7 @@ fun ProductoDetalleBody(
 
                     // Boton de comprar
                     Button(
-                        onClick = {
-                            /* onEvent(ProductoDetalleUiEvent.ComprarAhora(producto.productoId)) */
-                        },
+                        onClick = { onCheckoutProductClick(state.producto.productoId) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
@@ -464,6 +464,7 @@ fun ProductoDetalleBodyPreview() {
             )
         ),
         onEvent = {},
-        onProductClick = {}
+        onProductClick = {},
+        onCheckoutProductClick = {}
     )
 }

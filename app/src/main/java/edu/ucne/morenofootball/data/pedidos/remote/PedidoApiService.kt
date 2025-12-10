@@ -12,6 +12,9 @@ interface PedidoApiService {
     @GET("api/Pedidos/listByUsuarioId/{usuarioId}")
     suspend fun listByUsuarioId(@Path("usuarioId") usuarioId: Int): Response<List<PedidoResponseDto>>
 
+    @GET("api/Pedidos/getById/{pedidoId}")
+    suspend fun getById(@Path("pedidoId") pedidoId: Int): Response<PedidoResponseDto>
+
     @GET("api/Pedidos/listByEntrega/{usuarioId}")
     suspend fun listByEntrega(@Path("usuarioId") usuarioId: Int): Response<List<PedidoResponseDto>>
 
